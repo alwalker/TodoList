@@ -20,9 +20,29 @@ namespace TodoList
     /// </summary>
     public partial class MainWindow : Window
     {
+        private List<Todo> _todos = new List<Todo>();
+
         public MainWindow()
         {
             InitializeComponent();
+            lstTodos.ItemsSource = _todos;
+        }
+
+        private void btnAdd_Click(object sender, RoutedEventArgs e)
+        {
+            Todo newTodo = null;
+            var add = new AddTodo(newTodo);
+            if (add.ShowDialog().Value)
+            {
+                _todos.Add(newTodo);
+            }
+        }
+
+        private void Window_Loaded_1(object sender, RoutedEventArgs e)
+        {
+            var dao = new TodoDAO();
+
+            lstTodos.ItemsSource = dao.GetTodos();
         }
     }
 }
