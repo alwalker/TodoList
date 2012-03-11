@@ -38,11 +38,11 @@ namespace TodoList
             }
         }
 
-        private void Window_Loaded_1(object sender, RoutedEventArgs e)
+        private async void Window_Loaded_1(object sender, RoutedEventArgs e)
         {
             var dao = new TodoDAO();
-
-            lstTodos.ItemsSource = dao.GetTodos();
+            var todos = await dao.GetTodos();
+            lstTodos.ItemsSource = todos;
         }
     }
 }

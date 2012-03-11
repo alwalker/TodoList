@@ -10,9 +10,12 @@ namespace TodoList
     {
         public int Id { get; set; }
         public string Task { get; set; }
-        public DateTime DueDate { get; set; }
+        public DateTime? DueDate { get; set; }
         public DateTime CreateDate { get; set; }
 
-
+        public override string ToString()
+        {
+            return Task;
+        }
     }
 }
