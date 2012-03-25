@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,12 +22,11 @@ namespace TodoList
     /// </summary>
     public partial class MainWindow : Window
     {
-        private List<Todo> _todos = new List<Todo>();
+        private ObservableCollection<Todo> _todos;
 
         public MainWindow()
         {
             InitializeComponent();
-            lstTodos.ItemsSource = _todos;
         }
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
@@ -41,8 +42,28 @@ namespace TodoList
         private async void Window_Loaded_1(object sender, RoutedEventArgs e)
         {
             var dao = new TodoDAO();
-            var todos = await dao.GetTodos();
-            lstTodos.ItemsSource = todos;
+            _todos = await Todo.GetAllTodos(dao);
+            lstTodos.ItemsSource = _todos;
+        }
+
+        private void Window_Closing_1(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            File.Copy("TodoList.s3db", @"..\..\..\TodoList.s3db", true);
+        }
+
+        private void chkDone_Checked_1(object sender, RoutedEventArgs e)
+        {
+            var dao = new TodoDAO();
+            var todo = ((e.Source as CheckBox).DataContext as Todo);
+            if (todo != null)
+            {
+                todo.Complete(dao);
+            }
+        }
+
+        private void chkDone_Unchecked_1(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

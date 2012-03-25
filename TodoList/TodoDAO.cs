@@ -8,6 +8,7 @@ using Simple.Data;
 using System.IO;
 using System.Reflection;
 using System.Data;
+using System.Collections.ObjectModel;
 
 namespace TodoList
 {
@@ -19,7 +20,7 @@ namespace TodoList
             db.TODOs.Insert(todo);
         }
 
-        public async Task<List<Todo>> GetTodos()
+        public async Task<ObservableCollection<Todo>> GetTodos()
         {
             using (var conn = new SQLiteConnection("Data Source=TodoList.s3db"))
             {
@@ -30,10 +31,10 @@ namespace TodoList
                     {
                         if (!reader.HasRows)
                         {
-                            return null;
+                            return new ObservableCollection<Todo>();
                         }
 
-                        var todos = new List<Todo>();
+                        var todos = new ObservableCollection<Todo>();
                         Todo todo = null;
                         while (reader.Read())
                         {
@@ -41,6 +42,7 @@ namespace TodoList
                             todo.Id = Convert.ToInt32(reader["Id"].ToString());
                             todo.CreateDate = Convert.ToDateTime(reader["CreateDate"].ToString());
                             todo.Task = reader["Task"].ToString();
+                            todo.Done = Convert.ToBoolean(reader["Done"].ToString());
                             todo.DueDate = reader["DueDate"] == DBNull.Value ?
                                 null as DateTime? : Convert.ToDateTime(reader["DueDate"].ToString());
                             todos.Add(todo);
@@ -49,6 +51,12 @@ namespace TodoList
                     }
                 }
             }
+        }
+
+        public void SetComplete(Todo todo)
+        {
+            var db = Database.Open();
+            db.TODOs.Update(todo);
         }
     }
 }
