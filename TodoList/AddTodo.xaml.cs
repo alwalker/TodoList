@@ -29,7 +29,6 @@ namespace TodoList
 
         private void btnOk_Click(object sender, RoutedEventArgs e)
         {
-            _todo = new Todo();
             _todo.Task = txtTask.Text;
             _todo.CreateDate = DateTime.Now;
             _todo.DueDate = dtpDueDate.SelectedDate.Value;

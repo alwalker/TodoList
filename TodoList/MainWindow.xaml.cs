@@ -31,11 +31,12 @@ namespace TodoList
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
-            Todo newTodo = null;
+            Todo newTodo = new Todo();
             var add = new AddTodo(newTodo);
             if (add.ShowDialog().Value)
             {
                 _todos.Add(newTodo);
+                lstTodos.InvalidateVisual();
             }
         }
 
