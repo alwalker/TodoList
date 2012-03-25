@@ -12,7 +12,7 @@
         <ListBox x:Name="lstTodos" IsSynchronizedWithCurrentItem="True" SelectionMode="Single">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                        <CheckBox Name="chkDone" IsChecked="{Binding Path=Done}" Content="{Binding Path=Task}" Checked="chkDone_Checked_1" Unchecked="chkDone_Unchecked_1"/>
+                        <CheckBox Name="chkDone" IsChecked="{Binding Path=Done}" Content="{Binding Path=Task}" Checked="checkDone" Unchecked="checkUndone"/>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

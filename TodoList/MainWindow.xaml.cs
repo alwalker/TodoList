@@ -52,7 +52,17 @@ namespace TodoList
             File.Copy("TodoList.s3db", @"..\..\..\TodoList.s3db", true);
         }
 
-        private void chkDone_Checked_1(object sender, RoutedEventArgs e)
+        private void checkDone(object sender, RoutedEventArgs e)
+        {
+            CheckChanged(e);
+        }
+
+        private void checkUndone(object sender, RoutedEventArgs e)
+        {
+            CheckChanged(e);
+        }
+
+        private static void CheckChanged(RoutedEventArgs e)
         {
             var dao = new TodoDAO();
             var todo = ((e.Source as CheckBox).DataContext as Todo);
@@ -60,11 +70,6 @@ namespace TodoList
             {
                 todo.Complete(dao);
             }
-        }
-
-        private void chkDone_Unchecked_1(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }

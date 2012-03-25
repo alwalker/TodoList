@@ -35,7 +35,6 @@ namespace TodoList
 
         public void Complete(TodoDAO dao)
         {
-            Done = true;
             dao.SetComplete(this);
         }
     }
