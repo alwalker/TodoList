@@ -4,20 +4,39 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SQLite;
-using Simple.Data;
 using System.IO;
 using System.Reflection;
 using System.Data;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace TodoList
 {
     public class TodoDAO
     {
-        public void AddTodo(Todo todo)
+        public async void AddTodo(Todo todo)
         {
-            var db = Database.Open();
-            db.TODOs.Insert(todo);
+            using (var conn = new SQLiteConnection("Data Source=TodoList.s3db"))
+            {
+                var sb = new StringBuilder();
+                sb.Append("INSERT INTO TODOs (Task, DueDate, CreateDate, Done) VALUES ('");
+                sb.Append(todo.Task);
+                sb.Append("', '");
+                sb.Append(todo.DueDate.Value.ToString("yyyy-MM-dd HH:mm"));
+                sb.Append("', '");
+                sb.Append(todo.CreateDate.ToString("yyyy-MM-dd HH:mm"));
+                sb.Append("', ");
+                sb.Append(todo.Done ? 1 : 0);
+                sb.Append(");");
+
+                Debug.WriteLine("Executing: " + sb.ToString());
+
+                using (var cmd = new SQLiteCommand(sb.ToString(), conn))
+                {
+                    await conn.OpenAsync();
+                    await cmd.ExecuteNonQueryAsync();
+                }
+            }
         }
 
         public async Task<ObservableCollection<Todo>> GetTodos()
@@ -53,10 +72,16 @@ namespace TodoList
             }
         }
 
-        public void SetComplete(Todo todo)
+        public async void SetComplete(Todo todo)
         {
-            var db = Database.Open();
-            db.TODOs.Update(todo);
+            using (var conn = new SQLiteConnection("Data Source=TodoList.s3db"))
+            {
+                using (var cmd = new SQLiteCommand("UPDATE TODOs SET Done = 1 WHERE Id = " + todo.Id, conn))
+                {
+                    await conn.OpenAsync();
+                    await cmd.ExecuteNonQueryAsync();
+                }
+            }
         }
     }
 }
